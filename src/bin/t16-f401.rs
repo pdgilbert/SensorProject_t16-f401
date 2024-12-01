@@ -1,4 +1,4 @@
-# based on projects/temperature-display_no-rtic.rs
+//  based on projects/temperature-display_no-rtic.rs
 //! Measure temperature on sixteen temperature sensors (NTC 3950 10k thermistors probes) 
 //! using  4-channel adc's on I2C1 and crate ads1x1x. Display using SSD1306 on I2C2.
 //! Transmit with LoRa on SPI.
