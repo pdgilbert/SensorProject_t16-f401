@@ -7,7 +7,6 @@
 
 //!  To Do:
 //!    - improve calculation of sensor mv to degree C.
-//!    - make ID specification an argument in build so code does not need change for each module.
 
 //! https://www.ametherm.com/thermistor/ntc-thermistor-beta
 
@@ -20,7 +19,7 @@
 
 ///////////////////// 
 
-const ID:  [u8;3] = *b"T02";  //dereferenced byte string literal   // module id to indicate source of transmition
+//const ID:  [u8;3] = *b"T02";  //dereferenced byte string literal   // module id to indicate source of transmition
 
 const MODULE_CODE:  &str = "t16-f401"; 
 const READ_INTERVAL:  u32 = 300;  // used as seconds  but 
@@ -101,7 +100,7 @@ use radio_sx127x::{
 };
 
 
-/////////////////////  bus sharing
+/////////////////////  for 4 adc sharing bus
 
 use core::cell::RefCell;
 use embedded_hal_bus::i2c;  // has RefCellDevice;
@@ -221,12 +220,17 @@ const  SCALE: i64 = 8 ;  // = 32767 / 4096
         let mut line: heapless::Vec<u8, MESSAGE_LEN> = heapless::Vec::new(); 
         let mut temp: heapless::Vec<u8, S_FMT> = heapless::Vec::new(); 
 
+        // set this with
+        // MONITOR_ID="whatever" cargo build ...
+        // or  cargo:rustc-env=MONITOR_ID="whatever"
+        let monitor_id = option_env!("MONITOR_ID").expect("Txxx").as_bytes();
+
         // Consider handling error in next. If line is too short then attempt to write it crashes
         
-        for i in 0..ID.len() { line.push(ID[i]).unwrap()};
+        for i in 0..monitor_id.len() { line.push(monitor_id[i]).unwrap()};
         line.push(b'<').unwrap();
         
-        // t is long enough for 16 sensors - J1 to J16 on a module ID
+        // t is long enough for 16 sensors - J1 to J16 on a module
         for i in 0..t.len() {
                 temp.clear();
                 //hprintln!(" J{}:{:3}.{:1}",      i+1, t[i]/10, t[i].abs() %10).unwrap(); // t[0] is for J1
@@ -260,6 +264,7 @@ const  SCALE: i64 = 8 ;  // = 32767 / 4096
 
         lora.delay_ms(10); // treated as seconds. Without some delay next returns bad. (interrupt may also be an option)
 
+        let monitor_id = option_env!("MONITOR_ID").expect("Txxx");
         match lora.check_transmit() {
             Ok(b)   => {if b {show_message("TX good", disp);
                               //hprintln!("TX good").unwrap(); 
@@ -272,6 +277,8 @@ const  SCALE: i64 = 8 ;  // = 32767 / 4096
                         //hprintln!("check_transmit() Error. Should return True or False.").unwrap()
                        }
         };
+        lora.delay_ms(3);
+        show_message(monitor_id, disp);
        ()
     }
 

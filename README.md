@@ -22,8 +22,9 @@ crates and hals, and as a result is sometimes broken.
 ## Building
 
 ```
-cargo build --no-default-features --target thumbv7em-none-eabihf --features stm32f401 
+MONITOR_ID="whatever"  cargo build --no-default-features  --target thumbv7em-none-eabihf --features stm32f401   --bin t16-f401   [ --release ]
 ```
+MONITOR_ID is optional. If not supplied "Txxx" will be used. 
 The hal stm32f4xx_hal is used and set as a dependency in Cargo.toml.
 
 ## Loading
@@ -38,7 +39,7 @@ Adjust interface for your programming dongle.
 
 In another window do
 ```
-cargo  run --target thumbv7em-none-eabihf --features stm32f401  [ --release]
+MONITOR_ID="whatever"  cargo  run --target thumbv7em-none-eabihf --features stm32f401  [ --release]
 ```
 The `--release` will be needed if code is too big for memory.
 
