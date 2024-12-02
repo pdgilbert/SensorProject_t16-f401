@@ -19,7 +19,15 @@
 
 ///////////////////// 
 
-//const ID:  [u8;3] = *b"T02";  //dereferenced byte string literal   // module id to indicate source of transmition
+// set this with
+// MONITOR_ID="whatever" cargo build ...
+// or  cargo:rustc-env=MONITOR_ID="whatever"
+//const MONITOR_IDU : &[u8] = option_env!("MONITOR_ID").expect("Txxx").as_bytes();
+const MONITOR_ID: &str = option_env!("MONITOR_ID").expect("Txxx");
+const MONITOR_IDU : &[u8] = MONITOR_ID.as_bytes();
+
+//const MONITOR_ID:  [u8;3] = *b"T02";  //dereferenced byte string literal   // module id to indicate source of transmition
+
 
 const MODULE_CODE:  &str = "t16-f401"; 
 const READ_INTERVAL:  u32 = 300;  // used as seconds  but 
@@ -220,14 +228,9 @@ const  SCALE: i64 = 8 ;  // = 32767 / 4096
         let mut line: heapless::Vec<u8, MESSAGE_LEN> = heapless::Vec::new(); 
         let mut temp: heapless::Vec<u8, S_FMT> = heapless::Vec::new(); 
 
-        // set this with
-        // MONITOR_ID="whatever" cargo build ...
-        // or  cargo:rustc-env=MONITOR_ID="whatever"
-        let monitor_id = option_env!("MONITOR_ID").expect("Txxx").as_bytes();
-
         // Consider handling error in next. If line is too short then attempt to write it crashes
         
-        for i in 0..monitor_id.len() { line.push(monitor_id[i]).unwrap()};
+        for i in 0..MONITOR_IDU.len() { line.push(MONITOR_IDU[i]).unwrap()};
         line.push(b'<').unwrap();
         
         // t is long enough for 16 sensors - J1 to J16 on a module
@@ -264,7 +267,6 @@ const  SCALE: i64 = 8 ;  // = 32767 / 4096
 
         lora.delay_ms(10); // treated as seconds. Without some delay next returns bad. (interrupt may also be an option)
 
-        let monitor_id = option_env!("MONITOR_ID").expect("Txxx");
         match lora.check_transmit() {
             Ok(b)   => {if b {show_message("TX good", disp);
                               //hprintln!("TX good").unwrap(); 
@@ -278,7 +280,8 @@ const  SCALE: i64 = 8 ;  // = 32767 / 4096
                        }
         };
         lora.delay_ms(3);
-        show_message(monitor_id, disp);
+
+        show_message(&MONITOR_ID, disp);
        ()
     }
 
