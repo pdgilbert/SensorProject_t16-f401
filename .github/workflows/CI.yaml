@@ -1,0 +1,38 @@
+# Check with
+# yamllint CI.yaml | grep syntax
+
+on:
+  push:
+    branches: [main, dev,]
+  pull_request:
+  schedule:
+    - cron: 0 1 * * 1
+
+name: SensorProject_t16-f401 CI build
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+
+  check:
+    name: CI
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v3
+      # - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@nightly
+        with:
+          # profile: minimal
+          toolchain: nightly
+          target: "thumbv7em-none-eabihf"
+
+      - name: tree
+        run: cargo  tree
+
+      - name: old_hal_tree
+        run: cargo  tree  -i embedded-hal@0.2.7
+
+      - name: Build
+        run: MONITOR_ID="CI"  cargo build  --no-default-features --release --target thumbv7em-none-eabihf --features stm32f4xx,stm32f401
