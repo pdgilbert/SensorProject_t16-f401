@@ -12,7 +12,9 @@ version = "0.0.1"
 edition = "2021"
 
 [dependencies]
-                                          
+   
+cortex-m-semihosting   = ">=0.5.0"
+                                       
 #stm32f4xx-hal =  { version = "0.20.0" } ok
 #stm32f4xx-hal =  { version = "0.21.0" } ok
 stm32f4xx-hal =  { version = "0.22.1" }  

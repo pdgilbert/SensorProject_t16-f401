@@ -35,4 +35,4 @@ jobs:
         run: cargo  tree  -i embedded-hal@0.2.7
 
       - name: Build
-        run: MONITOR_ID="CI"  cargo build  --no-default-features --release --target thumbv7em-none-eabihf --features stm32f4xx,stm32f401
+        run: MONITOR_ID="CI"  cargo build  --no-default-features --release --target thumbv7em-none-eabihf --features stm32f401
