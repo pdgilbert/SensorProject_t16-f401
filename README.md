@@ -7,9 +7,10 @@ See the auto-generated menu in the github README display (above right).
 ## Summary
 
 This crate has code for a hardware design as in repository
-https://github.com/pdgilbert/SensorProject_t16-f401-pcb.
+https://github.com/pdgilbert/SensorProject_t16-pcb.
 It measures temperature from sixteen 10K NTC 3950 sensors using an adc. 
 The measurements are transmitted by LoRa and optionally displayed on an SSD1306.
+(Hardware is not supporting this yet.)
 
 The code here is based on code in 
 https://github.com/pdgilbert/rust-integration-testing/tree/main/examples/projects.
